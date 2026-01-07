@@ -8,6 +8,11 @@ const ProtectedRoute = ({children}) => {
         return <Navigate to="/" replace />
     } else {
 
+        // userData validation for ensuring the data type or value was allowed to being parsed
+        if (userData === null || userData === "" || userData === "null") {
+            return <Navigate to="/" replace />
+        }
+        
         // parse json into common object and validate the object first before pass to the hook state cred
         const json = JSON.parse(userData)
 
