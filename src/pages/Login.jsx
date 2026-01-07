@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { FaEnvelope, FaEye, FaEyeSlash } from "react-icons/fa";
+import { Navigate, replace, useNavigate } from "react-router";
 
 const LoginPage = () => {
     // useState, container lines
@@ -11,7 +12,7 @@ const LoginPage = () => {
     const [txtColour, setTxtColour] = useState("text-green-800 text-sm")
     const [user, setUser] = useState("")
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const [userdata, setUserData] = useState({})
+    const navigate = useNavigate();
     
     // handler lines
     function dummyJsonMaker(email, password, username) {
@@ -70,7 +71,6 @@ const LoginPage = () => {
             const username = credential[0]
             setUser(username)
             const json = dummyJsonMaker(email, password, username)
-            setUserData(json)
 
             // storing data to localstorage
             localStorage.setItem('json', JSON.stringify(json.data))
@@ -89,11 +89,32 @@ const LoginPage = () => {
             setTypePass("password")
         }
     }
+    function validateUser() {
+        const userData = localStorage.getItem('json')
 
-    // useEffect(() => {
-    //     const data = JSON.parse(localStorage.getItem('json'))
-    //     console.log("data dari localstorage : ", data)
-    // }, [])
+        if (userData === null || userData === "" || userData === "undefined" || userData === "null") {
+            return
+        }
+
+        const json = JSON.parse(userData)
+
+        if (Object.keys(json).length === 0) {
+            return
+        }
+
+        const user  = json.user
+        const token = json.token
+
+        if (user === "" || token === "" || typeof user !== "string" || typeof token !== "string") {
+            return
+        }
+
+        navigate("/dashboard", {replace: true})
+    }
+
+    useEffect(() => {
+        validateUser()
+    }, [])
 
     return (
         <>
