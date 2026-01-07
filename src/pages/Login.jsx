@@ -69,16 +69,17 @@ const LoginPage = () => {
             const credential = email.split("@")
             const username = credential[0]
             setUser(username)
-            console.log("kirim json :", dummyJsonMaker(email, password, username))
-
             const json = dummyJsonMaker(email, password, username)
             setUserData(json)
 
+            // storing data to localstorage
+            localStorage.setItem('json', JSON.stringify(json.data))
+            
             setIsSubmitting(false)
 
             window.location = "http://localhost:5173/Dashboard"
-        }, 3000)
-        
+        }, 2000)
+
     }
     function handlerPass(e) {
         e.preventDefault();
@@ -88,10 +89,6 @@ const LoginPage = () => {
             setTypePass("password")
         }
     }
-
-    useEffect(() => {
-        localStorage.setItem('json', JSON.stringify(userdata.data))
-    }, [userdata])
 
     // useEffect(() => {
     //     const data = JSON.parse(localStorage.getItem('json'))
