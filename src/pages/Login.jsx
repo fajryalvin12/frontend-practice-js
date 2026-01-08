@@ -12,6 +12,7 @@ const LoginPage = () => {
     const [isError, setIsError] = useState(true)
     const [txtColour, setTxtColour] = useState("text-green-800 text-sm")
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [remember, setRemember] = useState(false)
     
     // Hooks variable declaration
     const navigate = useNavigate();
@@ -77,7 +78,7 @@ const LoginPage = () => {
             const username = credential[0]
             const json = dummyJsonMaker(email, password, username)
             
-            const generateToken = setSession(json)
+            const generateToken = setSession(json, remember)
             console.log(generateToken)
             
             setIsSubmitting(false)
@@ -155,8 +156,14 @@ const LoginPage = () => {
                             {/* checkbox and forgot pass hyperlink */}
                             <div className="flex justify-between flex-row items-center gap-4">
                                 <div className="flex justify-center items-center gap-1 h-full text-sm">
-                                    <input type="checkbox" name="remind" id="remind" />
-                                    <label htmlFor="remind">Remember for 30 days</label>
+                                    <input 
+                                        type="checkbox" 
+                                        name="remember" 
+                                        id="remember" 
+                                        checked={remember} 
+                                        onChange={() => setRemember(remember? false : true)}
+                                    />
+                                    <label htmlFor="remember">Remember for 30 days</label>
                                 </div>
                                 <p className="text-sm">Forgot password?</p>
                             </div>

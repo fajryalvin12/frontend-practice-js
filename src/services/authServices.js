@@ -7,7 +7,7 @@ const SESSION_KEY = 'json'
 // get raw string json from localStorage
 export const getRawSession = () => {
     try {
-        return localStorage.getItem(SESSION_KEY)
+        return localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY)
     } catch {
         return null
     }
@@ -69,8 +69,10 @@ export const getSession = () => {
 }
 
 // reusable function for create new session 
-export const setSession = (sessionObj) => {
+export const setSession = (sessionObj, remember) => {
     let localJson = {}
+
+    console.log("remember sudah masuk setSession : ", remember)
 
     const user = sessionObj.data.userData
     const token = sessionObj.data.token
@@ -82,14 +84,20 @@ export const setSession = (sessionObj) => {
     localJson.user = user
     localJson.token = token
 
-    localStorage.setItem('json', JSON.stringify(localJson))
+    if (remember) {
+        localStorage.setItem('json', JSON.stringify(localJson))
+    } else {
+        sessionStorage.setItem('json', JSON.stringify(localJson))
+    }
+
     return true
 }
 
-// destroy session in localstorage 
+// destroy session, either in local or session storage 
 export const clearSession = () => {
     try {
-        return localStorage.removeItem(SESSION_KEY)
+        localStorage.removeItem(SESSION_KEY)
+        sessionStorage.removeItem(SESSION_KEY)
     } catch {
         // blank scope
     }
