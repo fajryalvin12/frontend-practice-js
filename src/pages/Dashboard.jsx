@@ -1,51 +1,13 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"
+import { clearSession } from "../services/authServices.js"
 
 const Dashboard = () => {
-    // line of state / useState 
-    const [cred, setCred] = useState({})
     const navigate = useNavigate()
 
     function clickLogout () {
-        localStorage.removeItem('json')
+        clearSession()
         navigate("/")
     }
-
-    function validateUserData() {
-        const userData = localStorage.getItem('json')
-
-        // check json data before parse into object 
-        if (userData === null || userData === "" || userData === "undefined") {
-            navigate("/")
-            return
-        } else {
-
-            // parse json into common object and validate the object first before pass to the hook state cred
-            const json = JSON.parse(userData)
-
-            // check object length, empty object indicate the parsing was failed
-            if (Object.keys(json).length === 0) {
-                navigate("/");
-                return;
-            }
-
-            const user  = json.user
-            const token = json.token
-
-            // check the value inside checked object before sending the value to state cred
-            if (user === "" || token === "" || typeof user !== "string" || typeof token !== "string") {
-               navigate("/")
-               return
-            }
-            setCred(json)
-        }
-    }
-
-    useEffect(() => {
-        validateUserData()
-    }, [])
-
-    console.log("credential yang login : ", cred.token)
 
     return (
         <>

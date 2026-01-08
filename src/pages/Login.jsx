@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { FaEnvelope, FaEye, FaEyeSlash } from "react-icons/fa";
-import { Navigate, replace, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
+import { getSession, setSession } from "../services/authServices.js"
 
 const LoginPage = () => {
     // useState, container lines
@@ -19,7 +20,10 @@ const LoginPage = () => {
         // init the JSON container and decide the allowed data 
         let dummyJson = {
             status: "",
-            data: {},
+            data: {
+                    token: "",
+                    userData: {id: 1, username: ""}
+                },
             message: "",
         }
         const validOneData = {
@@ -37,11 +41,11 @@ const LoginPage = () => {
 
         // assign the success value, token and status to JSON
         dummyJson.status = "success",
-        dummyJson.data.user = username,
+        dummyJson.data.userData.username = username,
         dummyJson.data.token = "B7xqXbKse85LQzwULgIbomXUefIRi69z7l1aS4q0CtWU0YRzREMtHAIc7hy7ZUL2"
         dummyJson.message = "Login Berhasil"
         setIsError(false)
-        
+
         return dummyJson
     }
     function handlerSubmitForm (e) {
@@ -71,13 +75,13 @@ const LoginPage = () => {
             const username = credential[0]
             setUser(username)
             const json = dummyJsonMaker(email, password, username)
-
-            // storing data to localstorage
-            localStorage.setItem('json', JSON.stringify(json.data))
+            
+            const generateToken = setSession(json)
+            console.log(generateToken)
             
             setIsSubmitting(false)
 
-            window.location = "http://localhost:5173/Dashboard"
+            navigate("/dashboard")
         }, 2000)
 
     }
@@ -89,31 +93,9 @@ const LoginPage = () => {
             setTypePass("password")
         }
     }
-    function validateUser() {
-        const userData = localStorage.getItem('json')
-
-        if (userData === null || userData === "" || userData === "undefined" || userData === "null") {
-            return
-        }
-
-        const json = JSON.parse(userData)
-
-        if (Object.keys(json).length === 0) {
-            return
-        }
-
-        const user  = json.user
-        const token = json.token
-
-        if (user === "" || token === "" || typeof user !== "string" || typeof token !== "string") {
-            return
-        }
-
-        navigate("/dashboard", {replace: true})
-    }
 
     useEffect(() => {
-        validateUser()
+        getSession()
     }, [])
 
     return (
