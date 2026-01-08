@@ -1,9 +1,9 @@
-
-import LoginPage from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
 import { createBrowserRouter } from "react-router";
 import { RouterProvider } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
+import LoginPage from "./pages/Login";
+import DashboardPage from "./pages/Dashboard";
+import ProfilePage from "./pages/Profile";
 
 const App = () => {
 
@@ -14,7 +14,11 @@ const App = () => {
         },
         {
             path: "/dashboard",
-            element: <ProtectedRoute><Dashboard /></ProtectedRoute>
+            element: <ProtectedRoute><DashboardPage /></ProtectedRoute>
+        },
+        {
+            path: "/profile",
+            element: <ProtectedRoute><ProfilePage /></ProtectedRoute>
         }
     ])
 

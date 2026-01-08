@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { FaEnvelope, FaEye, FaEyeSlash } from "react-icons/fa";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { getSession, setSession } from "../services/authServices.js"
 
 const LoginPage = () => {
@@ -11,9 +11,11 @@ const LoginPage = () => {
     const [error, setError] = useState("")
     const [isError, setIsError] = useState(true)
     const [txtColour, setTxtColour] = useState("text-green-800 text-sm")
-    const [user, setUser] = useState("")
     const [isSubmitting, setIsSubmitting] = useState(false)
+    
+    // Hooks variable declaration
     const navigate = useNavigate();
+    const location = useLocation();
     
     // handler lines
     function dummyJsonMaker(email, password, username) {
@@ -73,15 +75,21 @@ const LoginPage = () => {
         setTimeout(() => {
             const credential = email.split("@")
             const username = credential[0]
-            setUser(username)
             const json = dummyJsonMaker(email, password, username)
             
             const generateToken = setSession(json)
             console.log(generateToken)
             
             setIsSubmitting(false)
+            
+            const beforePage = location?.state?.pathname
+            
+            if (!beforePage || beforePage === "") {
+                navigate("/dashboard")
+            } else {
+                navigate(beforePage)
+            }
 
-            navigate("/dashboard")
         }, 2000)
 
     }
@@ -141,7 +149,7 @@ const LoginPage = () => {
                                 </button>
                             </div>
                             <p className={txtColour}>   
-                                {!isError ? `Login berhasil, selamat datang : ${user}` : error}
+                                {isError ? error : ""}
                             </p>
 
                             {/* checkbox and forgot pass hyperlink */}
