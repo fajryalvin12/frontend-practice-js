@@ -40,13 +40,19 @@ export const validateSession = (session) => {
     // check object length, empty object indicate the parsing was failed
     if (Object.keys(session).length === 0) return false
 
-    const {user, token} = session
+    const {user, token, expiresAt} = session
+
+    // check expiry date, validate the expiresAt first
+    if (!expiresAt || typeof expiresAt !== "number" || Date.now() >= expiresAt) {
+        clearSession()
+        return false
+    }
 
     // check the token first 
-    if (!token || typeof token !== "string" || token === "") return false 
+    if (!token || typeof token !== "string" || token.trim() === "") return false 
 
     // check the value inside checked object before sending the value to state cred
-    if (!user || Array.isArray(user)) return false;
+    if (!user || Array.isArray(user) || typeof user !== "object") return false;
 
     return true
 }
@@ -59,11 +65,14 @@ export const getSession = () => {
 
     // call safeParseSession() 
     const cleanSession = safeParseSession(rawSession)
-    if (cleanSession === "null" || cleanSession === null) return null 
+    if (cleanSession === "null" || cleanSession === null) {
+        clearSession()
+        return null
+    } 
 
     // call validateSession() 
-    const isAllowedUser = validateSession(cleanSession)
-    if (!isAllowedUser) return null
+    const isValidSession = validateSession(cleanSession)
+    if (!isValidSession) return null
 
     return cleanSession;
 }
@@ -72,17 +81,22 @@ export const getSession = () => {
 export const setSession = (sessionObj, remember) => {
     let localJson = {}
 
-    console.log("remember sudah masuk setSession : ", remember)
-
     const user = sessionObj.data.userData
     const token = sessionObj.data.token
+    const expiresAt = sessionObj.data.expiresAt
 
-    if (user === "" || typeof user !== "object" || token === "" || typeof token !== "string") {
-        return false
-    }
+    // user validation check
+    if (Array.isArray(user) || user === null || typeof user !== "object" ) return false 
 
-    localJson.user = user
-    localJson.token = token
+    // token validation check 
+    if (token === "" || typeof token !== "string") return false
+
+    // expiresAt validation check 
+    if (typeof expiresAt !== "number" || !Number.isFinite(expiresAt) || expiresAt <= Date.now()) return false
+
+    localJson.user      = user
+    localJson.token     = token
+    localJson.expiresAt = expiresAt
 
     if (remember) {
         localStorage.setItem('json', JSON.stringify(localJson))

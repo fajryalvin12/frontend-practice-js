@@ -49,6 +49,14 @@ const LoginPage = () => {
         dummyJson.data.userData.username = username,
         dummyJson.data.token = "B7xqXbKse85LQzwULgIbomXUefIRi69z7l1aS4q0CtWU0YRzREMtHAIc7hy7ZUL2"
         dummyJson.message = "Login Berhasil"
+        
+        // set expiredAt, regarding to checked box "Remember me"
+        if (remember) {
+            dummyJson.data.expiresAt = Date.now() + 2592000000
+        } else {
+            dummyJson.data.expiresAt = Date.now() + 7200000
+        }
+
         setIsError(false)
 
         return dummyJson
