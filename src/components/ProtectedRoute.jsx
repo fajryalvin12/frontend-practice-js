@@ -1,11 +1,12 @@
 import { Navigate, useLocation } from "react-router";
-import { getSession } from "../services/authServices";
+import { useAuth } from "../contexts/authContext";
 
 const ProtectedRoute = ({children}) => {
     const location = useLocation()
+    const auth = useAuth()
+    const isAuth = auth.isAuth
 
-    const allowedUser = getSession()
-    if (allowedUser === null) return <Navigate state={location} to="/" replace />
+    if (!isAuth) return <Navigate state={location} to="/" replace />
 
     return children
 }

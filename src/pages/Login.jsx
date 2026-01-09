@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FaEnvelope, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router";
 import { getSession, setSession } from "../services/authServices.js"
+import { useAuth } from "../contexts/authContext.jsx";
 
 const LoginPage = () => {
     // useState, container lines
@@ -17,7 +18,8 @@ const LoginPage = () => {
     // Hooks variable declaration
     const navigate = useNavigate();
     const location = useLocation();
-    
+    const auth = useAuth()
+        
     // handler lines
     function dummyJsonMaker(email, password, username) {
         // init the JSON container and decide the allowed data 
@@ -78,8 +80,7 @@ const LoginPage = () => {
             const username = credential[0]
             const json = dummyJsonMaker(email, password, username)
             
-            const generateToken = setSession(json, remember)
-            console.log(generateToken)
+            auth.login(json, remember)
             
             setIsSubmitting(false)
             
