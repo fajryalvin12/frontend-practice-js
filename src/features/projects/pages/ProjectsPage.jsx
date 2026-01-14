@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom"
 import Navbar from "../../../components/Navbar.jsx"
 import { AuthProvider } from "../../../contexts/authContext.jsx"
 import { getAll, getById } from "../services/projectServices.js"
-import { useEffect } from "react"
 
 const ProjectsPage = () => {
     const navigate = useNavigate()
