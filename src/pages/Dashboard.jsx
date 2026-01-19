@@ -1,11 +1,14 @@
 import { useNavigate } from "react-router-dom"
 import Navbar from "../components/Navbar.jsx"
-import { AuthProvider, useAuth } from "../contexts/authContext.jsx"
+import { AuthProvider } from "../contexts/authContext.jsx"
 
 const Dashboard = () => {
     const navigate = useNavigate()
     function clickProfile() {
         navigate("/profile")
+    }
+    function clickProject() {
+        navigate("/projects")
     }
 
     return (
@@ -18,10 +21,12 @@ const Dashboard = () => {
                         <button className="flex-1/2 bg-blue-800 text-white font-semibold rounded-xl p-2" onClick={clickProfile}>
                         Profile
                         </button>
+                        <button className="flex-1/2 bg-blue-800 text-white font-semibold rounded-xl p-2" onClick={clickProject}>
+                        Projects
+                        </button>
                     </div>
                 </div>
             </div>
-            <AuthProvider />
         </>
     )
 }

@@ -97,6 +97,7 @@ export const getAll = () => {
 
 export const getById = (id) => {
     let selected = {}
+    const projects = getAll()
 
     for(let i = 0; i < projects.length; i++) {
 
@@ -160,4 +161,68 @@ export const createProject = (name, status, priority, desc, deadline) => {
     localStorage.setItem("projects", JSON.stringify(allData))
 
     return result
+}
+
+export const editProject = (id, name, status, priority, desc, deadline) => {
+    let result = {
+        success: false,
+        message: "",
+        data: {}
+    }
+
+    const parseId = parseInt(id)
+    const mainData = getAll()
+
+    if (isNaN(parseId)) throw new Error("Invalid id format!")
+
+    let isFound = false
+
+    for (let i = 0; i < mainData.length; i++) {
+        if (mainData[i].id === parseId) {
+            mainData[i].name = name 
+            mainData[i].status = status 
+            mainData[i].priority = priority 
+            mainData[i].desc = desc 
+            mainData[i].deadline = deadline 
+            mainData[i].updatedAt = setTimestamp()
+            isFound = true
+            break
+        }
+    }
+
+    localStorage.setItem('projects', JSON.stringify(mainData))
+
+    const selectedData = getById(parseId)
+    if (!isFound) {
+        result.success = false
+        result.message = "Data not found"
+    } else {
+        result.success = true
+        result.message = "Data successfully updated!"
+        result.data = selectedData
+    }
+    
+    return result
+}
+
+export const removeProject = (id) => {
+    let result = {
+        success: false,
+        message: "",
+    }
+    
+    const mainData = getAll()
+    
+    const undeletedData = mainData.filter(item => item.id !== id)
+    console.log("undeleted data : ", undeletedData)
+    if (!undeletedData) {
+        result.success = false
+        result.message = "Failed to delete data, data not found"
+    }
+
+    localStorage.setItem("projects", JSON.stringify(undeletedData))
+    result.success = true 
+    result.message = "Data successfully deleted"
+    
+    return result 
 }

@@ -26,6 +26,10 @@ const router = createBrowserRouter([
     {
         path: "/addproject",
         element: <ProtectedRoute><ProjectForm /></ProtectedRoute>
+    },
+    {
+        path: "/:id/editproject",
+        element: <ProtectedRoute><ProjectForm /></ProtectedRoute>
     }
 ])
 
